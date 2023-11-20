@@ -7,12 +7,15 @@ class App extends Component {
     super();
     this.state = {
       monsters: [],
+      searchField: ''
     }
+    console.log('constructor')
   }
 
   // This code will run when React renders the component
   // The only time a component will "remount" is if it was unmounted
   componentDidMount(){
+    console.log('componentDidMount')
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(response => response.json())
       .then(users => 
@@ -28,10 +31,27 @@ class App extends Component {
   }
 
   render() {
+    console.log('render')
+
+    const filteredMonsters = this.state.monsters.filter((monster) => {
+      return monster.name.toLocaleLowerCase().includes(this.state.searchField)
+    });
+
     return (
       <div className="App">
+        <input 
+          className='search-box' 
+          type='search' 
+          placeholder='search' 
+          onChange={(event) => {
+            console.log(event.target.value);
+            const searchField = event.target.value.toLocaleLowerCase();
+            this.setState(() => {
+              return { searchField }
+            })
+          }}></input>
         {
-          this.state.monsters.map((monster) => {
+          filteredMonsters.map((monster) => {
             return <h1 key={monster.id}>{monster.name}</h1>
           })
         }
